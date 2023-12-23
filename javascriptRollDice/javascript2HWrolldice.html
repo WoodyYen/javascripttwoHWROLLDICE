@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Roller</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 10px;
+        }
+    </style>
+    <script>
+        var diceImages = [];
+
+        function start() {
+            var button = document.getElementById("rollButton");
+            button.addEventListener("click", rollDice);
+
+            var diceTable = document.createElement("table");
+            document.body.appendChild(diceTable);
+
+            for (var i = 0; i < 12; i++) {
+                if (i % 6 === 0) {
+                    var row = document.createElement("tr");
+                    diceTable.appendChild(row);
+                }
+
+                var dieImage = document.createElement("img");
+                dieImage.setAttribute("src", "die1.png");
+                dieImage.setAttribute("alt", "blank image");
+
+                var cell = document.createElement("td");
+                cell.appendChild(dieImage);
+
+                diceImages.push(dieImage);
+                diceTable.lastChild.appendChild(cell);
+            }
+        }
+
+        function rollDice() {
+            for (var i = 0; i < diceImages.length; i++) {
+                setImage(diceImages[i]);
+            }
+
+            // Display probability table
+            displayProbability();
+        }
+
+        function setImage(dieImg) {
+            var dieValue = Math.floor(1 + Math.random() * 6);
+            dieImg.setAttribute("src", "die" + dieValue + ".png");
+            dieImg.setAttribute("alt", "die image with " + dieValue + " spot(s)");
+        }
+
+        function displayProbability() {
+    var count = [0, 0, 0, 0, 0, 0]; // Array to store the count of each face
+
+    // Roll 12 dice
+    for (var i = 0; i < diceImages.length; i++) {
+        var dieValue = parseInt(diceImages[i].getAttribute("alt").replace(/\D/g, ""));
+        count[dieValue - 1]++; // Increment the count for the corresponding face
+    }
+
+    // Display probability table
+    var table = "<table border='1'><tr><th>FACE</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr><tr><th>PERCENT</th>";
+    for (var i = 0; i < count.length; i++) {
+        var percent = (count[i] / diceImages.length * 100).toFixed(2);
+        table += "<td>" + percent + "%</td>";
+    }
+    table += "</tr></table>";
+
+    // Set innerHTML to replace the existing table content
+    var existingTable = document.getElementById("probabilityTable");
+    if (existingTable) {
+        existingTable.innerHTML = table;
+    } else {
+        // If the table doesn't exist, create a new one
+        var newTable = document.createElement("div");
+        newTable.innerHTML = table;
+        newTable.id = "probabilityTable";
+        document.body.appendChild(newTable);
+    }
+}
+
+        window.onload = start;
+    </script>
+</head>
+<body>
+    <form action="#">
+        <input id="rollButton" type="button" value="Roll Dice">
+    </form>
+</body>
+</html>
